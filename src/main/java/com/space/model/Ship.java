@@ -1,6 +1,6 @@
 package com.space.model;
 
-import java.
+import java.util.Date;
 
 public class Ship {
     private Long id;
