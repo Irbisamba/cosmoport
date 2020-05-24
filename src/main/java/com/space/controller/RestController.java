@@ -34,4 +34,16 @@ public class RestController {
         return shipService.filteredShips(filteredShips, request.getOrder(),
                 request.getPageNumber(), request.getPageSize());
     }
+
+    @GetMapping("/ships/count")
+    public Integer getShipsCount(@RequestParam(required = false) Boolean isUsed, FindShipRequest request) {
+        List<Ship> filteredShips = shipService.getShipsList(request);
+        return filteredShips.size();
+    }
+
+    @GetMapping("/ships/{id}")
+    public Ship getShip(@RequestParam(required = true) Integer id) {
+
+        return null;
+    }
 }

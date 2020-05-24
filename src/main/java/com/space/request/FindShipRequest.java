@@ -12,7 +12,7 @@ public class FindShipRequest {
     private ShipType shipType;
     private Long after;
     private Long before;
-    private Boolean isUsed;
+    private Boolean used;
     private Double minSpeed;
     private Double maxSpeed;
     private Integer minCrewSize;
@@ -64,11 +64,11 @@ public class FindShipRequest {
     }
 
     public Boolean getUsed() {
-        return isUsed;
+        return used;
     }
 
     public void setUsed(Boolean used) {
-        isUsed = used;
+        this.used = used;
     }
 
     public Double getMinSpeed() {

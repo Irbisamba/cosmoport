@@ -91,7 +91,7 @@ public class ShipService {
         return (80*v*k)/(3019-year+1);
     }
 
-    public List<Ship> getShipsList(@NonNull FindShipRequest request) {
+    public List<Ship> getShipsList(FindShipRequest request) {
         List<Ship> shipList = shipRepository.findAll();
         //System.out.println(shipList.toString());
         String name = request.getName();
@@ -203,5 +203,9 @@ public class ShipService {
 
         return comparator;
     }
+
+//    public Ship getShip(Integer id) {
+//        shipRepository.getOne(id);
+//    }
 
 }
