@@ -91,9 +91,8 @@ public class ShipService {
         return (80*v*k)/(3019-year+1);
     }
 
-    public List<Ship> getShipsList(FindShipRequest request) {
+    public List<Ship> getShipsList(Boolean isUsed, FindShipRequest request) {
         List<Ship> shipList = shipRepository.findAll();
-        //System.out.println(shipList.toString());
         String name = request.getName();
         if (name != null && !name.trim().isEmpty()) {
             shipList = shipList.stream()
@@ -124,9 +123,9 @@ public class ShipService {
                     .filter(ship -> ship.getProdDate().getTime()<=before)
                     .collect(Collectors.toList());
         }
-        if (request.getUsed() != null) {
+        if (isUsed != null) {
             shipList = shipList.stream()
-                    .filter(ship -> ship.getUsed().equals(request.getUsed()))
+                    .filter(ship -> ship.getUsed().equals(isUsed))
                     .collect(Collectors.toList());
         }
         Double minSpeed = request.getMinSpeed();

@@ -70,7 +70,7 @@ public class GetCountTest extends AbstractTest {
     //test4
     @Test
     public void getCountWithFiltersShipTypeIsUsed() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(get("/rest/ships/count?shipType=MERCHANT&used=true")
+        ResultActions resultActions = this.mockMvc.perform(get("/rest/ships/count?shipType=MERCHANT&isUsed=true")
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -138,7 +138,7 @@ public class GetCountTest extends AbstractTest {
     //test8
     @Test
     public void getCountWithFiltersIsUsedMinMaxSpeed() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(get("/rest/ships/count?used=false&minSpeed=0.3&maxSpeed=0.6")
+        ResultActions resultActions = this.mockMvc.perform(get("/rest/ships/count?isUsed=false&minSpeed=0.3&maxSpeed=0.6")
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

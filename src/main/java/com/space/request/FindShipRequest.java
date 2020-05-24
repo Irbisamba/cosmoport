@@ -3,6 +3,8 @@ package com.space.request;
 import com.space.controller.ShipOrder;
 import com.space.model.ShipType;
 
+import java.beans.ConstructorProperties;
+
 public class FindShipRequest {
     private String name;
     private String planet;

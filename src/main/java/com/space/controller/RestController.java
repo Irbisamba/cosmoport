@@ -29,15 +29,15 @@ public class RestController {
     }
 
     @GetMapping("/ships")
-    public List<Ship> getShipsList(FindShipRequest request) {
-        List<Ship> filteredShips = shipService.getShipsList(request);
+    public List<Ship> getShipsList(@RequestParam(required = false) Boolean isUsed, FindShipRequest request) {
+        List<Ship> filteredShips = shipService.getShipsList(isUsed, request);
         return shipService.filteredShips(filteredShips, request.getOrder(),
                 request.getPageNumber(), request.getPageSize());
     }
 
     @GetMapping("/ships/count")
-    public Integer getShipsCount(FindShipRequest request) {
-        List<Ship> filteredShips = shipService.getShipsList(request);
+    public Integer getShipsCount(@RequestParam(required = false) Boolean isUsed, FindShipRequest request) {
+        List<Ship> filteredShips = shipService.getShipsList(isUsed, request);
         return filteredShips.size();
     }
 
