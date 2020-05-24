@@ -124,10 +124,7 @@ public class ShipService {
                     .filter(ship -> ship.getProdDate().getTime()<=before)
                     .collect(Collectors.toList());
         }
-        System.out.println(request);
-        System.out.println(request.getUsed());
         if (request.getUsed() != null) {
-            System.out.println("isUsed = ");
             shipList = shipList.stream()
                     .filter(ship -> ship.getUsed().equals(request.getUsed()))
                     .collect(Collectors.toList());

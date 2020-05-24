@@ -159,7 +159,7 @@ public class GetAllTest extends AbstractTest {
     //test8
     @Test
     public void getAllWithFiltersIsUsedMaxSpeedMaxRating() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/rest/ships?isUsed=false&maxSpeed=0.6&maxRating=7")
+        ResultActions resultActions = mockMvc.perform(get("/rest/ships?used=false&maxSpeed=0.6&maxRating=7")
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
