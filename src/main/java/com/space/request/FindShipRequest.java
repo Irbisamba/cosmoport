@@ -2,9 +2,6 @@ package com.space.request;
 
 import com.space.controller.ShipOrder;
 import com.space.model.ShipType;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestParam;
 
 public class FindShipRequest {
     private String name;

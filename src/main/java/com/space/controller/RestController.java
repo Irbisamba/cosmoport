@@ -36,14 +36,25 @@ public class RestController {
     }
 
     @GetMapping("/ships/count")
-    public Integer getShipsCount(@RequestParam(required = false) Boolean isUsed, FindShipRequest request) {
+    public Integer getShipsCount(FindShipRequest request) {
         List<Ship> filteredShips = shipService.getShipsList(request);
         return filteredShips.size();
     }
 
     @GetMapping("/ships/{id}")
-    public Ship getShip(@RequestParam(required = true) Integer id) {
+    public Ship getShip(@PathVariable Integer id) {
+        return shipService.getShip(id);
+    }
 
-        return null;
+    @PostMapping("/ships/{id}")
+    @ResponseBody
+    public Ship updateShip(@PathVariable Integer id, @RequestBody ShipRequest request) {
+        return shipService.updateShip(id, request);
+    }
+
+    @DeleteMapping("/ships/{id}")
+    @ResponseBody
+    public void deleteShip(@PathVariable Integer id) {
+        shipService.deleteShip(id);
     }
 }

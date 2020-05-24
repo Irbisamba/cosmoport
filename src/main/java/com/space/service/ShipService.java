@@ -2,16 +2,16 @@ package com.space.service;
 
 import com.space.controller.ShipOrder;
 import com.space.exception.BadRequestException;
+import com.space.exception.NotFoundException;
 import com.space.model.Ship;
 import com.space.model.ShipType;
 import com.space.repository.ShipRepository;
 import com.space.request.FindShipRequest;
 import com.space.request.ShipRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,7 +35,7 @@ public class ShipService {
         } else {
             throw new BadRequestException();
         }
-        if(!request.getPlanet().trim().isEmpty() && request.getPlanet().length()<=50) {
+        if(Objects.nonNull(request.getPlanet()) &&!request.getPlanet().trim().isEmpty() && request.getPlanet().length()<=50) {
             ship.setPlanet(request.getPlanet());
         } else {
             throw new BadRequestException();
@@ -204,8 +204,63 @@ public class ShipService {
         return comparator;
     }
 
-//    public Ship getShip(Integer id) {
-//        shipRepository.getOne(id);
-//    }
+    public Ship getShip(Integer id) {
+        if(id!=null && id>0) {
+            Long longId = id.longValue();
+            return shipRepository.findById(longId).orElseThrow(
+                    NotFoundException::new);
+        } else  {
+            throw new BadRequestException();
+        }
+    }
+
+    public Ship updateShip(Integer id, ShipRequest request) {
+        Ship ship = getShip(id);
+        if(Objects.nonNull(request.getName())) {
+            if(!request.getName().trim().isEmpty() && request.getName().length()<=50) {
+            ship.setName(request.getName());
+            } else throw new BadRequestException();
+        }
+        if(Objects.nonNull(request.getPlanet())) {
+            if(!request.getPlanet().trim().isEmpty() && request.getPlanet().length()<=50) {
+                ship.setPlanet(request.getPlanet());
+            } else throw new BadRequestException();
+        }
+        if(request.getProdDate()!=null) {
+            if(request.getProdDate()>=0) {
+                Date date = new Date(request.getProdDate());
+                if (date.getYear() + 1900 >= 2800 && date.getYear() + 1900 <= 3019) {
+                    ship.setProdDate(date);
+                } else throw new BadRequestException();
+            } else throw new BadRequestException();
+        }
+        if(request.getUsed() != null) {
+            ship.setUsed(request.getUsed());
+        }
+        if(request.getSpeed() != null && request.getSpeed()>0) {
+            double speedValue = round(request.getSpeed());
+            if (speedValue >= 0.01d && speedValue <= 0.99d) {
+                ship.setSpeed(speedValue);
+            } else throw new BadRequestException();
+        }
+
+        if(request.getCrewSize() != null) {
+            if(request.getCrewSize()>0 && request.getCrewSize()<10000) {
+                ship.setCrewSize(request.getCrewSize());
+            } else throw new BadRequestException();
+        }
+        if(request.getShipType()!=null) {
+            ship.setShipType(request.getShipType());
+        }
+
+        Double rating = round(countRating(ship));
+        ship.setRating(rating);
+        return shipRepository.save(ship);
+    }
+
+    public void deleteShip(Integer id) {
+        Ship ship = getShip(id);
+        shipRepository.delete(ship);
+    }
 
 }

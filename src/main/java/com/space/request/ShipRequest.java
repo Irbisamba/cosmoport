@@ -7,18 +7,13 @@ import java.util.Date;
 
 public class ShipRequest {
 
-    @NonNull
+
     private String name;
-    @NonNull
     private String planet;
-    @NonNull
     private ShipType shipType;
-    @NonNull
     private Long prodDate;
     private Boolean isUsed;
-    @NonNull
     private Double speed;
-    @NonNull
     private Integer crewSize;
 
     @NonNull
