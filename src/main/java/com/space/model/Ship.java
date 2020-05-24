@@ -25,6 +25,22 @@ public class Ship {
     @Column
     @Enumerated(EnumType.STRING)
     private ShipType shipType;
+
+    @Override
+    public String toString() {
+        return "Ship{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", planet='" + planet + '\'' +
+                ", shipType=" + shipType +
+                ", prodDate=" + prodDate.getTime() +
+                ", isUsed=" + isUsed +
+                ", speed=" + speed +
+                ", crewSize=" + crewSize +
+                ", rating=" + rating +
+                '}';
+    }
+
     @Column
     private Date prodDate;
     @Column

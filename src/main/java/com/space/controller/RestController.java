@@ -1,14 +1,14 @@
 package com.space.controller;
 
 import com.space.model.Ship;
+import com.space.request.FindShipRequest;
 import com.space.request.ShipRequest;
 import com.space.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/rest")
@@ -26,5 +26,12 @@ public class RestController {
     @ResponseBody
     public Ship createShip(@RequestBody ShipRequest request) {
        return shipService.createShip(request);
+    }
+
+    @GetMapping("/ships")
+    public List<Ship> getShipsList(FindShipRequest request) {
+        List<Ship> filteredShips = shipService.getShipsList(request);
+        return shipService.filteredShips(filteredShips, request.getOrder(),
+                request.getPageNumber(), request.getPageSize());
     }
 }

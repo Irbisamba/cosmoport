@@ -1,17 +1,22 @@
 package com.space.service;
 
+import com.space.controller.ShipOrder;
 import com.space.exception.BadRequestException;
 import com.space.model.Ship;
+import com.space.model.ShipType;
 import com.space.repository.ShipRepository;
+import com.space.request.FindShipRequest;
 import com.space.request.ShipRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ShipService {
@@ -85,4 +90,118 @@ public class ShipService {
         double year = ship.getProdDate().getYear()+1900;
         return (80*v*k)/(3019-year+1);
     }
+
+    public List<Ship> getShipsList(@NonNull FindShipRequest request) {
+        List<Ship> shipList = shipRepository.findAll();
+        //System.out.println(shipList.toString());
+        String name = request.getName();
+        if (name != null && !name.trim().isEmpty()) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getName().contains(name))
+                    .collect(Collectors.toList());
+        }
+        String planet = request.getPlanet();
+        if (planet != null && !planet.trim().isEmpty()) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getPlanet().contains(planet))
+                    .collect(Collectors.toList());
+        }
+        ShipType shipType = request.getShipType();
+        if (shipType != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getShipType().equals(shipType))
+                    .collect(Collectors.toList());
+        }
+        Long after = request.getAfter();
+        if (after != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getProdDate().getTime()>=after)
+                    .collect(Collectors.toList());
+        }
+        Long before = request.getBefore();
+        if (before != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getProdDate().getTime()<=before)
+                    .collect(Collectors.toList());
+        }
+        System.out.println(request);
+        System.out.println(request.getUsed());
+        if (request.getUsed() != null) {
+            System.out.println("isUsed = ");
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getUsed().equals(request.getUsed()))
+                    .collect(Collectors.toList());
+        }
+        Double minSpeed = request.getMinSpeed();
+        if (minSpeed != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getSpeed() >= minSpeed)
+                    .collect(Collectors.toList());
+        }
+        Double maxSpeed = request.getMaxSpeed();
+        if (maxSpeed != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getSpeed() <= maxSpeed)
+                    .collect(Collectors.toList());
+        }
+        Integer minCrewSize = request.getMinCrewSize();
+        if (minCrewSize != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getCrewSize() >= minCrewSize)
+                    .collect(Collectors.toList());
+        }
+        Integer maxCrewSize = request.getMaxCrewSize();
+        if (maxCrewSize != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getCrewSize() <= maxCrewSize)
+                    .collect(Collectors.toList());
+        }
+        Double minRating = request.getMinRating();
+        if (minRating != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getRating() >= minRating)
+                    .collect(Collectors.toList());
+        }
+        Double maxRating = request.getMaxRating();
+        if (maxRating != null) {
+            shipList = shipList.stream()
+                    .filter(ship -> ship.getRating() <= maxRating)
+                    .collect(Collectors.toList());
+        }
+        return shipList;
+    }
+
+    public List<Ship> filteredShips(final List<Ship> shipList, ShipOrder order, Integer pageNumber, Integer pageSize) {
+        pageNumber = pageNumber == null ? 0 : pageNumber;
+        pageSize = pageSize == null ? 3 : pageSize;
+
+        return shipList.stream()
+                .sorted(getComparator(order))
+                .skip(pageNumber * pageSize)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+    }
+    private Comparator<Ship> getComparator(ShipOrder order) {
+        if (order == null) {
+            return Comparator.comparing(Ship::getId);
+        }
+
+        Comparator<Ship> comparator = null;
+        switch (order.getFieldName()) {
+            case "id":
+                comparator = Comparator.comparing(Ship::getId);
+                break;
+            case "speed":
+                comparator = Comparator.comparing(Ship::getSpeed);
+                break;
+            case "prodDate":
+                comparator = Comparator.comparing(Ship::getProdDate);
+                break;
+            case "rating":
+                comparator = Comparator.comparing(Ship::getRating);
+        }
+
+        return comparator;
+    }
+
 }
