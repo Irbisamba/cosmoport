@@ -25,8 +25,7 @@ public class ShipService {
 
     public Ship createShip(@NonNull ShipRequest request) {
         Ship ship = new Ship();
-        if(Objects.nonNull(request.getName()) && request.getName().length()<=50) {
-            System.out.println("setting name");
+        if(Objects.nonNull(request.getName()) && !request.getName().trim().isEmpty() && request.getName().length()<=50) {
             ship.setName(request.getName());
         } else {
             throw new BadRequestException();
@@ -36,32 +35,29 @@ public class ShipService {
         } else {
             throw new BadRequestException();
         }
-        System.out.println("before date");
-//        if(request.getProdDate()>=0) {
-//            Date date = new Date(request.getProdDate());
-//            if (date.getYear() >= 2800 && date.getYear() <= 3019) {
-//                ship.setProdDate(date);
-//            } else {
-//                throw  new BadRequestException();
-//            }
-//        } else {
-//            throw new BadRequestException();
-//        }
-
-            Date date = request.getProdDate();
-            if (date.getYear() >= 2800 && date.getYear() <= 3019) {
+        if(request.getProdDate()>=0) {
+            Date date = new Date(request.getProdDate());
+            if (date.getYear()+1900 >= 2800 && date.getYear()+1900 <= 3019) {
                 ship.setProdDate(date);
             } else {
                 throw  new BadRequestException();
             }
-        if(request.getUsed() == null)
+        } else {
+            throw new BadRequestException();
+        }
+        if(request.getUsed() == null || request.getUsed() == false) {
             ship.setUsed(false);
-        else ship.setUsed(request.getUsed());
-        System.out.println(ship.getUsed());
-        double speedValue = round(request.getSpeed());
-        if(speedValue>=0.01d && speedValue<=0.99d) {
-            ship.setSpeed(speedValue);
-        } else { throw new BadRequestException(); }
+        } else {
+            ship.setUsed(true);
+        }
+        if(request.getSpeed() != null && request.getSpeed()>0) {
+            double speedValue = round(request.getSpeed());
+            if (speedValue >= 0.01d && speedValue <= 0.99d) {
+                ship.setSpeed(speedValue);
+            } else {
+                throw new BadRequestException();
+            }
+        } else throw new BadRequestException();
 
         if(request.getCrewSize()>0 && request.getCrewSize()<10000) {
             ship.setCrewSize(request.getCrewSize());
@@ -82,11 +78,11 @@ public class ShipService {
     }
 
     private double countRating(Ship ship){
-        double k = 0d;
+        double k = 1d;
         if(ship.getUsed())
             k = 0.5d;
         double v = ship.getSpeed();
-        double year = ship.getProdDate().getYear();
+        double year = ship.getProdDate().getYear()+1900;
         return (80*v*k)/(3019-year+1);
     }
 }

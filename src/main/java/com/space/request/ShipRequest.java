@@ -14,7 +14,7 @@ public class ShipRequest {
     @NonNull
     private ShipType shipType;
     @NonNull
-    private Date prodDate;
+    private Long prodDate;
     private Boolean isUsed;
     @NonNull
     private Double speed;
@@ -49,11 +49,11 @@ public class ShipRequest {
     }
 
     @NonNull
-    public Date getProdDate() {
+    public Long getProdDate() {
         return prodDate;
     }
 
-    public void setProdDate(@NonNull Date prodDate) {
+    public void setProdDate(@NonNull Long prodDate) {
         this.prodDate = prodDate;
     }
 
